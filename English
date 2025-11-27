@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My AI App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #response {
+      margin-top: 20px;
+      white-space: pre-wrap;
+      background: #eef;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>My AI App</h2>
+
+    <textarea id="inputText" placeholder="Type your question..."></textarea>
+    <button onclick="sendMessage()">Send</button>
+
+    <div id="response"></div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("inputText").value;
+      const outputBox = document.getElementById("response");
+      outputBox.textContent = "Processing...";
+
+      const apiKey = "YOUR_API_KEY"; // <-- Replace with your key
+
+      const body = {
+        model: "gpt-4o-mini", // <-- Change to your model
+        messages: [
+          { role: "system", content: "YOUR SYSTEM PROMPT HERE" },
+          { role: "user", content: input }
+        ]
+      };
+
+      try {
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
+          },
+          body: JSON.stringify(body)
+        });
+
+        const data = await res.json();
+        outputBox.textContent = data.choices[0].message.content;
+      } catch (err) {
+        outputBox.textContent = "Error: " + err;
+      }
+    }
+  </script>
+</body>
+</html>
